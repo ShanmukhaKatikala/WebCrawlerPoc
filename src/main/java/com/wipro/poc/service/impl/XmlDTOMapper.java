@@ -16,6 +16,7 @@ import com.wipro.poc.service.IDTOMapper;
 public class XmlDTOMapper implements IDTOMapper {
 	private static final Logger LOGGER = Logger.getLogger(XmlDTOMapper.class);
 	
+	@Override
 	public SitemapDTO mapper(Sitemap sitemap) {
 		LOGGER.debug("mapper() | IN");
 		SitemapDTO sitemapDto = new SitemapDTO();

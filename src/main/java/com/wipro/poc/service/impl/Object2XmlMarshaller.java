@@ -12,7 +12,7 @@ import com.wipro.poc.util.ConvertDto2File;
 @Service
 public class Object2XmlMarshaller implements IObjectMarshaller {
 	private static final Logger LOGGER = Logger.getLogger(Object2XmlMarshaller.class);
-	
+
 	@Value("${crawldata.outfilepath}")
 	private String outFilePath;
 
@@ -21,5 +21,9 @@ public class Object2XmlMarshaller implements IObjectMarshaller {
 		LOGGER.debug("marshallObject() | IN");
 		ConvertDto2File.marshalDTO(sitemapDto, outFilePath);
 		LOGGER.debug("marshallObject() | EXIT");
+	}
+
+	public void setOutFilePath(String outFilePath) {
+		this.outFilePath = outFilePath;
 	}
 }

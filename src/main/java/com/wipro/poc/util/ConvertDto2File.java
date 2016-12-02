@@ -30,6 +30,8 @@ public class ConvertDto2File {
 		} catch (IOException | JAXBException e) {
 			LOGGER.error("marshalDTO() | marshalling object failed;", e);
 			throw new ServiceException(e.getMessage());
+		} catch(NullPointerException npe) {
+			throw new ServiceException(npe.getMessage());
 		} finally {
 			if (null != bos) {
 				try {
