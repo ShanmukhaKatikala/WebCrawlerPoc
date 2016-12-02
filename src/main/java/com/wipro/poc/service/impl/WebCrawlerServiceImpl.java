@@ -2,6 +2,7 @@ package com.wipro.poc.service.impl;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.wipro.poc.beans.Sitemap;
 import com.wipro.poc.dto.SitemapDTO;
@@ -10,6 +11,7 @@ import com.wipro.poc.service.IDTOMapper;
 import com.wipro.poc.service.IWebCrawler;
 import com.wipro.poc.service.IWebCrawlerService;
 
+@Service
 public class WebCrawlerServiceImpl implements IWebCrawlerService {
 	private static final Logger LOGGER = Logger.getLogger(WebCrawlerServiceImpl.class);
 

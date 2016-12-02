@@ -5,13 +5,10 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 	<context:annotation-config />
-
-	<bean id="webCrawler" class="com.wipro.poc.service.impl.JSoupWebCrawller" />
-	<bean id="dtoMapper" class="com.wipro.poc.service.impl.XmlDTOMapper" />
-	<bean id="objectMarshaller" class="com.wipro.poc.service.impl.Object2XmlMarshaller" />
-	
+	<context:component-scan base-package="com.wipro.poc.service.impl" />
 	<context:property-placeholder location="classpath:applicationConfig.properties"
 		ignore-unresolvable="true" />
 
 	<bean id="webCrawlerSerive" class="com.wipro.poc.service.impl.WebCrawlerServiceImpl" />
+	<bean id="objectMarshaller" class="com.wipro.poc.service.impl.Object2XmlMarshaller" />
 </beans>

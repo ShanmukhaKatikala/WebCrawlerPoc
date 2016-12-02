@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.wipro.poc.beans.Sitemap;
 import com.wipro.poc.dto.ImageDTO;
@@ -11,6 +12,7 @@ import com.wipro.poc.dto.SitemapDTO;
 import com.wipro.poc.dto.UrlDTO;
 import com.wipro.poc.service.IDTOMapper;
 
+@Service
 public class XmlDTOMapper implements IDTOMapper {
 	private static final Logger LOGGER = Logger.getLogger(XmlDTOMapper.class);
 	

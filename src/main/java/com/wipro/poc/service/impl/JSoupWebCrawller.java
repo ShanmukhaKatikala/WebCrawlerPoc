@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.wipro.poc.beans.Sitemap;
@@ -20,6 +21,7 @@ import com.wipro.poc.constants.AppConstants;
 import com.wipro.poc.exception.ServiceException;
 import com.wipro.poc.service.IWebCrawler;
 
+@Service
 public class JSoupWebCrawller implements IWebCrawler {
 	private static final Logger LOGGER = Logger.getLogger(JSoupWebCrawller.class);
 

@@ -2,12 +2,14 @@ package com.wipro.poc.service.impl;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.wipro.poc.dto.SitemapDTO;
 import com.wipro.poc.exception.ServiceException;
 import com.wipro.poc.service.IObjectMarshaller;
 import com.wipro.poc.util.ConvertDto2File;
 
+@Service
 public class Object2XmlMarshaller implements IObjectMarshaller {
 	private static final Logger LOGGER = Logger.getLogger(Object2XmlMarshaller.class);
 	
