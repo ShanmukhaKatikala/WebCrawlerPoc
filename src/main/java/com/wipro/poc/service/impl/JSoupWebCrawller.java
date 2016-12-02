@@ -1,15 +1,14 @@
-package com.wipro.poc.util;
+package com.wipro.poc.service.impl;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
-import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -18,9 +17,11 @@ import org.springframework.util.CollectionUtils;
 
 import com.wipro.poc.beans.Sitemap;
 import com.wipro.poc.constants.AppConstants;
+import com.wipro.poc.exception.ServiceException;
 import com.wipro.poc.service.IWebCrawler;
 
-public class JSoupUtil implements IWebCrawler {
+public class JSoupWebCrawller implements IWebCrawler {
+	private static final Logger LOGGER = Logger.getLogger(JSoupWebCrawller.class);
 
 	@Value("${proxy.required}")
 	private String proxyRequired;
@@ -41,12 +42,16 @@ public class JSoupUtil implements IWebCrawler {
 	private String mandatoryDomains;
 
 	@Override
-	public Sitemap crawler(String url, boolean crawlForSubDomains, boolean crawlForImages) throws IOException {
+	public Sitemap crawler(String url, boolean crawlForSubDomains, boolean crawlForImages) throws ServiceException {
+		LOGGER.debug("crawler() | IN");
+		// Complete list of crawled URLs and Images
 		Sitemap crawledSitemap = new Sitemap();
 
+		// Crawl user entered url
 		Sitemap parentResultSitemap = crawlSubDomain(url, crawlForImages);
 		crawledSitemap.getUrlSet().add(url);
 
+		// Crawl for child urls recursively
 		if (crawlForSubDomains && null != parentResultSitemap) {
 			while (true) {
 				Sitemap resultSitemap = recursiveCrawl(parentResultSitemap, crawledSitemap, crawlForImages);
@@ -54,23 +59,28 @@ public class JSoupUtil implements IWebCrawler {
 					break;
 				}
 				parentResultSitemap = resultSitemap;
-
-				System.out.println("crawledSitemap: " + crawledSitemap.getUrlSet());
 			}
 		}
-
+		LOGGER.debug("crawler() | OUT: crawledSitemap: " + crawledSitemap.getUrlSet());
 		return crawledSitemap;
 	}
 
 	private Sitemap recursiveCrawl(Sitemap subdomain, Sitemap crawledSitemap, boolean crawlForImages)
-			throws IOException {
+			throws ServiceException {
 		Sitemap tempSitemap = new Sitemap();
+
+		// Iterate through each subdomain URL and have the crawled set of URLs
 		for (String subdomainUrl : subdomain.getUrlSet()) {
 			String tempSubDomainUrl = trimLeadingChar(subdomainUrl);
+
+			// Skip configured domains and already crawled urls
 			if (skipSubDomainUrl(subdomainUrl) || crawledSitemap.getUrlSet().contains(subdomainUrl)
 					|| crawledSitemap.getUrlSet().contains(tempSubDomainUrl)) {
 				continue;
 			}
+
+			// Crawl subdomain url and maintain temporary sitemap for each url
+			// crawled with child urls & images
 			Sitemap subdomainSiteMap = crawlSubDomain(subdomainUrl, crawlForImages);
 			if (null != subdomainSiteMap) {
 				tempSitemap.getUrlSet().addAll(subdomainSiteMap.getUrlSet());
@@ -80,13 +90,17 @@ public class JSoupUtil implements IWebCrawler {
 			crawledSitemap.getUrlSet().add(subdomainUrl);
 		}
 
+		// Crawled url and images history
 		crawledSitemap.getImageSet().addAll(subdomain.getImageSet());
 		return tempSitemap;
 	}
 
-	private Sitemap crawlSubDomain(String url, boolean crawlForImages) throws IOException {
-		System.out.println("Crawling: " + url);
+	private Sitemap crawlSubDomain(String url, boolean crawlForImages) throws ServiceException {
+		LOGGER.debug("crawlSubDomain() | IN; URL=" + url);
 		int statusCode = AppConstants.CONNECT_SUCCESS;
+
+		// URL connection to website using Jsoup library with proxy and without
+		// proxy
 		Document document = null;
 		try {
 			if (getProxyRequired()) {
@@ -97,11 +111,16 @@ public class JSoupUtil implements IWebCrawler {
 			}
 		} catch (HttpStatusException e) {
 			statusCode = e.getStatusCode();
+			LOGGER.error("crawlSubDomain(): Crawl URL failed with HttpStatusException and skipping...;", e);
 		} catch (IOException e) {
 			statusCode = AppConstants.CONNECT_FAILURE;
+			LOGGER.error("crawlSubDomain(): Crawl URL failed;", e);
+			throw new ServiceException("crawlSubDomain(): Crawl URL failed;" + e.getMessage());
 		}
 
 		Sitemap sitemap = null;
+
+		// Prepare sitemap only for SUCCESS status
 		if (AppConstants.CONNECT_SUCCESS == statusCode) {
 			Elements urls = document.select(AppConstants.URL_SELECTOR_REGEX);
 			Set<String> domainUrls = getDomainElements(urls, AppConstants.URL_SELECTOR_ATTRIBUTE);
@@ -176,14 +195,4 @@ public class JSoupUtil implements IWebCrawler {
 
 		return url;
 	}
-
-	public static void main(String[] args) {
-		JSoupUtil jSoupUtil = new JSoupUtil();
-		/*
-		 * try { jSoupUtil.crawler("http://www.wiprodigital.com", true, true); }
-		 * catch (IOException e) { e.printStackTrace(); }
-		 */
-		System.out.println(jSoupUtil.trimLeadingChar("http://wipro.com/sfsf/sfsdf/sfd111/"));
-	}
-
 }

@@ -29,7 +29,6 @@ public class Sitemap {
 		if (CollectionUtils.isEmpty(this.imageSet) && CollectionUtils.isEmpty(urlSet)) {
 			return true;
 		}
-
 		return false;
 	}
 }

@@ -6,8 +6,9 @@
 
 	<context:annotation-config />
 
-	<bean id="webCrawler" class="com.wipro.poc.util.JSoupUtil" />
-	<bean id="dtoMapper" class="com.wipro.poc.util.XmlDTOMapper" />
+	<bean id="webCrawler" class="com.wipro.poc.service.impl.JSoupWebCrawller" />
+	<bean id="dtoMapper" class="com.wipro.poc.service.impl.XmlDTOMapper" />
+	<bean id="objectMarshaller" class="com.wipro.poc.service.impl.Object2XmlMarshaller" />
 	
 	<context:property-placeholder location="classpath:applicationConfig.properties"
 		ignore-unresolvable="true" />

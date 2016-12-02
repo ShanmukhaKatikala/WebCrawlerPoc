@@ -1,17 +1,21 @@
-package com.wipro.poc.util;
+package com.wipro.poc.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.wipro.poc.beans.Sitemap;
 import com.wipro.poc.dto.ImageDTO;
 import com.wipro.poc.dto.SitemapDTO;
 import com.wipro.poc.dto.UrlDTO;
-import com.wipro.poc.service.DTOMapper;
+import com.wipro.poc.service.IDTOMapper;
 
-public class XmlDTOMapper implements DTOMapper {
+public class XmlDTOMapper implements IDTOMapper {
+	private static final Logger LOGGER = Logger.getLogger(XmlDTOMapper.class);
 	
 	public SitemapDTO mapper(Sitemap sitemap) {
+		LOGGER.debug("mapper() | IN");
 		SitemapDTO sitemapDto = new SitemapDTO();
 
 		if (null == sitemap) {
@@ -35,6 +39,7 @@ public class XmlDTOMapper implements DTOMapper {
 		sitemapDto.setUrl(urlDtos);
 		sitemapDto.setImage(imageDtos);
 
+		LOGGER.debug("mapper() | EXIT");
 		return sitemapDto;
 	}
 }
